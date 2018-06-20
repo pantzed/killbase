@@ -1,6 +1,6 @@
+DROP DATABASE IF EXISTS killbase;
+CREATE DATABASE killbase;
 \c killbase
-DROP SCHEMA public CASCADE;
-CREATE SCHEMA public;
 
 CREATE TABLE assassins (
   id serial primary key,
@@ -94,9 +94,77 @@ VALUES
 
 CREATE TABLE asn_contract_j (
   contract_id integer references contracts(id),
-  assassian_id integer references assassins(id)
+  assassin_id integer references assassins(id)
 );
 
+-- Assign the following jobs to these assassins
+INSERT INTO asn_contract_j (contract_id, assassin_id)
+VALUES (1, 6),
+(1, 2),
+(2, 5),
+(3, 7),
+(5, 9),
+(4, 6),
+(3, 8),
+(1, 3);
+
+-- Count the number of currently contracted assassins
+SELECT COUNT(assassin_id) FROM asn_contract_j;
+
+-- Find the lowest total cost to complete all assigned contracts
+SELECT SUM(budget) FROM contracts;
+
+-- Add a new contract: Snake Plissken
+INSERT INTO targets (id, name, location, photo, security)
+VALUES (DEFAULT, 'Snake Plissken', 'New York', 'https://i.kinja-img.com/gawker-media/image/upload/s--mbwBG8vL--/18lvo57tluxjejpg.jpg', 5);
+
+INSERT INTO contracts (id, target, client, budget, complete, completed_by)
+VALUES (DEFAULT, 6, 1, 35, FALSE, NULL);
+
+-- Assign all assassins with a rate lower than the cost of the new contract to the new contract.
+-- Incomplete!
+
+
+
+-- Complete these contracts
+UPDATE contracts SET complete = TRUE, completed_by = 1 WHERE target = 2;
+UPDATE assassins SET kills = kills+1 WHERE id = 1;
+
+UPDATE contracts SET complete = TRUE, completed_by = 3 WHERE target = 1;
+UPDATE assassins SET kills = kills+1 WHERE id = 3;
+
+UPDATE contracts SET complete = TRUE, completed_by = 8 WHERE target = 6;
+UPDATE assassins SET kills = kills+1 WHERE id = 8;
+
+
+
+
+-- Select all the completed contracts, showing only the assassins to be paid, and the amount paid to them. 
+SELECT assassins.name, contracts.budget AS payment_amount
+FROM assassins, contracts
+WHERE assassins.id = contracts.completed_by;
+
+-- Show the total cost of the completed contracts.
+SELECT SUM(budget) AS total_paid FROM assassins INNER JOIN contracts ON (assassins.id = contracts.completed_by);
+
+-- The Jackal has retired. Remove him from the database
+-- We will keep all records in the database and create a new column indicating retirement status
+ALTER TABLE assassins ADD COLUMN retired bool;
+UPDATE assassins SET retired = FALSE;
+UPDATE assassins SET retired = TRUE WHERE id = 1;
+
+-- Ghost Dog and Nikita Mears have increased their rates by 5 and 10, respectively. Update their entries to reflect this.
+UPDATE assassins SET min_price = min_price+10 WHERE id = 8;
+UPDATE assassins SET min_price = min_price+5 WHERE id = 3;
+
+-- The contract on Norman Stansfield has been rescinded. Remove it (and any associated data) from the database.
+DELETE FROM contracts USING targets
+WHERE targets.id = 3;
+
+-- Winston has taken out a contract on John Wick! (Security 9, budget 100) We may have to rethink the way we're structuring our data. How can we refactor our database schema to allow a person to be an assassin, a client, or the target of a contract? Do that, then assign all assassins not already on a job to this new contract.
+
+
+-- Show all tables
 SELECT * FROM assassins;
 SELECT * FROM code_names;
 SELECT * FROM clients;
