@@ -76,11 +76,11 @@ VALUES
 
 CREATE TABLE contracts (
   id serial primary key,
-  target integer references targets(id),
-  client integer references clients(id),
+  target integer references targets(id) ON DELETE CASCADE,
+  client integer references clients(id) ON DELETE CASCADE,
   budget integer,
   complete boolean NOT NULL,
-  completed_by integer references assassins(id)
+  completed_by integer references assassins(id) ON DELETE CASCADE
 );
 
 INSERT INTO contracts (id, target, client, budget, complete, completed_by)
@@ -93,8 +93,8 @@ VALUES
 ;
 
 CREATE TABLE asn_contract_j (
-  contract_id integer references contracts(id),
-  assassin_id integer references assassins(id)
+  contract_id integer references contracts(id) ON DELETE CASCADE,
+  assassin_id integer references assassins(id) ON DELETE CASCADE
 );
 
 -- Assign the following jobs to these assassins
@@ -161,7 +161,10 @@ UPDATE assassins SET min_price = min_price+5 WHERE id = 3;
 DELETE FROM contracts USING targets
 WHERE targets.id = 3;
 
--- Winston has taken out a contract on John Wick! (Security 9, budget 100) We may have to rethink the way we're structuring our data. How can we refactor our database schema to allow a person to be an assassin, a client, or the target of a contract? Do that, then assign all assassins not already on a job to this new contract.
+-- Winston has taken out a contract on John Wick! (Security 9, budget 100)
+-- We may have to rethink the way we're structuring our data. 
+-- How can we refactor our database schema to allow a person to be an assassin, a client, or the target of a contract? 
+-- Do that, then assign all assassins not already on a job to this new contract.
 
 
 -- Show all tables
