@@ -1,11 +1,11 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('contracts', (table) => {
     table.increments();
-    table.integer('target').references('id').inTable('assassins');
-    table.integer('client').references('id').inTable('clients');
+    table.integer('target').references('id').inTable('assassins').onDelete('cascade');
+    table.integer('client').references('id').inTable('clients').onDelete('cascade');
     table.integer('budget');
     table.boolean('complete');
-    table.integer('completed_by').references('id').inTable('assassins').nullable();
+    table.integer('completed_by').references('id').inTable('assassins').onDelete('cascade').nullable();
   });
 };
 
