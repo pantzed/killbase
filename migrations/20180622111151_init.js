@@ -3,6 +3,7 @@ exports.up = function(knex, Promise) {
   return knex.schema.createTable('assassins', (table) => {
     table.increments();
     table.string('name');
+    table.integer('age');
     table.string('weapon');
     table.integer('min_price');
     table.float('rating');
