@@ -1,0 +1,27 @@
+{
+  "name": "killbase",
+  "version": "1.0.0",
+  "description": "Killbase is a job board for international assassins. Assassins and their clients can register with Killbase, and enter or sign up for jobs. Assassins can have zero or more code names, and can sign up for any number of contracts; a contract may also be open to any number of assassins.",
+  "main": "kb.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pantzed/killbase.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pantzed/killbase/issues"
+  },
+  "homepage": "https://github.com/pantzed/killbase#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "fs": "0.0.1-security",
+    "knex": "^0.14.6",
+    "path": "^0.12.7",
+    "pg": "^7.4.3"
+  }
+}
